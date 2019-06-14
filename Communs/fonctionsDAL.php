@@ -275,9 +275,9 @@
 		{
 			$req = $BDD->prepare('SELECT a.id AS id,a.titre AS titre,a.dateHeureCreation AS dateCreation,a.dateHeureModification AS dateModif,
 			a.contenu AS contenu,a.nbreVues AS nbreVues,u.pseudo AS pseudo,g.genre AS genre FROM articles AS a 
-			JOIN utilisateurs AS u ON a.idAuteur = u.id JOIN genre AS g ON a.idGenre = g.id WHERE a.id = ? LIMIT 1');
+			JOIN utilisateurs AS u ON a.idAuteur = u.id JOIN genres AS g ON a.idGenre = g.id WHERE a.id = ? LIMIT 1');
 			$req->execute(array($idMessage));
-			if($reponse = $req->fetch())
+			if($reponse = $req->fetchAll())
 			{
 				return $reponse;
 			}
@@ -292,44 +292,35 @@
 		}
 	}
 
-	function extraitsArticlesRecents(PDO $BDD,$nbrArticles,$numPremierArticle,$genre = "")
-	{
-		if($nbrArticles == filter_var($nbrArticles,FILTER_VALIDATE_INT))
-		{
-			if($numPremierArticle == filter_var($numPremierArticle,FILTER_VALIDATE_INT))
-			{
-				if($genre == "")
-				{
+	function extraitsArticlesRecents(PDO $BDD,$nbrArticles,$numPremierArticle,$genre = ""){
+		if($nbrArticles == filter_var($nbrArticles,FILTER_VALIDATE_INT)){
+			if($numPremierArticle == filter_var($numPremierArticle,FILTER_VALIDATE_INT)){
+				if($genre == ""){
 					$req = $BDD->prepare('SELECT a.id AS id,a.titre AS titre,a.dateHeureCreation AS dateCreation,a.dateHeureModification AS dateModif,
-					a.contenu AS contenu,a.nbreVues AS nbreVues,u.pseudo AS pseudo,g.genre AS genre FROM articles AS a 
-					JOIN utilisateurs AS u ON u.id = a.idAuteur JOIN genre AS g ON g.id = a.idGenre 
+					a.contenu AS contenu,a.nbreVues AS nbreVues,a.imageLien AS imageLien,u.pseudo AS pseudo,g.genre AS genre FROM articles AS a 
+					JOIN utilisateurs AS u ON u.id = a.idAuteur JOIN genres AS g ON g.id = a.idGenre 
 					ORDER BY dateCreation DESC LIMIT :nbrArticles OFFSET :offset');
 					$req->bindValue('nbrArticles',$nbrArticles,PDO::PARAM_INT);
 					$req->bindValue('offset',$numPremierArticle,PDO::PARAM_INT);
 					$req->execute();
-					if($reponse = $req->fetch())
-					{
+					if($reponse = $req->fetchAll()){
 						return $reponse;
 					}
-					else
-					{
+					else{
 						return -1;
 					}
 				}
-				else
-				{
-					if($genre == filter_var($genre,FILTER_VALIDATE_INT))
-					{
+				else{
+					if($genre == filter_var($genre,FILTER_VALIDATE_INT)){
 						$req = $BDD->prepare('SELECT a.id AS id,a.titre AS titre,a.dateHeureCreation AS dateCreation,a.dateHeureModification AS dateModif,
 						a.contenu AS contenu,a.nbreVues AS nbreVues,u.pseudo AS pseudo,g.genre AS genre FROM articles AS a 
-						JOIN utilisateurs AS u ON u.id = a.idAuteur JOIN genre AS g ON g.id = a.idGenre 
+						JOIN utilisateurs AS u ON u.id = a.idAuteur JOIN genres AS g ON g.id = a.idGenre 
 						WHERE a.idGenre = :genre ORDER BY dateCreation DESC LIMIT :nbrArticles OFFSET :id');
 						$req->bindValue('nbrArticles',$nbrArticles,PDO::PARAM_INT);
 						$req->bindValue('offset',$numPremierArticle,PDO::PARAM_INT);
 						$req->bindValue('genre',$genre,PDO::PARAM_INT);
 						$req->execute();
-						if($reponse = $req->fetch())
-						{
+						if($reponse = $req->fetchAll()){
 							return $reponse;
 						}
 						else{
@@ -341,48 +332,38 @@
 		}
 	}
 	
-	function extraitsArticlesPopulaires(PDO $BDD,$nbrArticles,$numPremierArticle,$genre = "")
-	{
-		if($nbrArticles == filter_var($nbrArticles,FILTER_VALIDATE_INT))
-		{
-			if($numPremierArticle == filter_var($numPremierArticle,FILTER_VALIDATE_INT))
-			{
-				if($genre == "")
-				{
+	function extraitsArticlesPopulaire(PDO $BDD,$nbrArticles,$numPremierArticle,$genre = ""){
+		if($nbrArticles == filter_var($nbrArticles,FILTER_VALIDATE_INT)){
+			if($numPremierArticle == filter_var($numPremierArticle,FILTER_VALIDATE_INT)){
+				if($genre == ""){
 					$req = $BDD->prepare('SELECT a.id AS id,a.titre AS titre,a.dateHeureCreation AS dateCreation,a.dateHeureModification AS dateModif,
-					a.contenu AS contenu,a.nbreVues AS nbreVues,u.pseudo AS pseudo,g.genre AS genre FROM articles AS a 
+					a.contenu AS contenu,a.nbreVues AS nbreVues,a.imageLien AS imageLien,u.pseudo AS pseudo,g.genre AS genre FROM articles AS a 
 					JOIN utilisateurs AS u ON u.id = a.idAuteur JOIN genre AS g ON g.id = a.idGenre 
-					ORDER BY nbreVues DESC, dateCreation DESC LIMIT :nbrArticles OFFSET :offset');
+					ORDER BY nbreVues DESC , dateCreation DESC LIMIT :nbrArticles OFFSET :offset');
 					$req->bindValue('nbrArticles',$nbrArticles,PDO::PARAM_INT);
 					$req->bindValue('offset',$numPremierArticle,PDO::PARAM_INT);
 					$req->execute();
-					if($reponse = $req->fetch())
-					{
+					if($reponse = $req->fetchAll()){
 						return $reponse;
 					}
-					else
-					{
+					else{
 						return -1;
 					}
 				}
-				else
-				{
-					if($genre == filter_var($genre,FILTER_VALIDATE_INT))
-					{
+				else{
+					if($genre == filter_var($genre,FILTER_VALIDATE_INT)){
 						$req = $BDD->prepare('SELECT a.id AS id,a.titre AS titre,a.dateHeureCreation AS dateCreation,a.dateHeureModification AS dateModif,
 						a.contenu AS contenu,a.nbreVues AS nbreVues,u.pseudo AS pseudo,g.genre AS genre FROM articles AS a 
 						JOIN utilisateurs AS u ON u.id = a.idAuteur JOIN genre AS g ON g.id = a.idGenre 
-						WHERE a.idGenre = :genre ORDER BY nbreVues DESC LIMIT :nbrArticles OFFSET :offset');
+						WHERE a.idGenre = :genre ORDER BY nbreVues DESC , dateCreation DESC LIMIT :nbrArticles OFFSET :offset');
 						$req->bindValue('nbrArticles',$nbrArticles,PDO::PARAM_INT);
 						$req->bindValue('offset',$numPremierArticle,PDO::PARAM_INT);
 						$req->bindValue('genre',$genre,PDO::PARAM_INT);
 						$req->execute();
-						if($reponse = $req->fetch())
-						{
+						if($reponse = $req->fetchAll()){
 							return $reponse;
 						}
-						else
-						{
+						else{
 							return -1;
 						}
 					}
@@ -391,6 +372,70 @@
 		}
 	}
 	
+	function extraitsArticlesPopulaireDate(PDO $BDD,$mois,$annee){
+		if($mois == filter_var($mois,FILTER_VALIDATE_INT)){
+			if($annee == filter_var($annee,FILTER_VALIDATE_INT)){
+				$req = $BDD->prepare(
+					'SELECT a.id AS id,
+						a.titre AS titre,
+						a.dateHeureCreation AS dateCreation,
+						a.dateHeureModification AS dateModif,
+						a.contenu AS contenu,
+						a.nbreVues AS nbreVues,
+						a.imageLien AS imageLien,
+						u.pseudo AS pseudo,
+						g.genre AS genre 
+					FROM articles AS a 
+					JOIN utilisateurs AS u ON u.id = a.idAuteur 
+					JOIN genres AS g ON g.id = a.idGenre 
+					WHERE MONTH(a.dateHeureCreation) = :mois AND YEAR(a.dateHeureCreation) = :annee
+					ORDER BY nbreVues DESC'
+				);
+				$req->bindValue('mois',$mois,PDO::PARAM_INT);
+				$req->bindValue('annee',$annee,PDO::PARAM_INT);
+				$req->execute();
+				if($reponse = $req->fetchAll()){
+					return $reponse;
+				}
+				else{
+					return -1;
+				}
+			}
+		}
+	}
+
+	function extraitsArticlesRecentsDate(PDO $BDD,$mois,$annee){
+		if($mois == filter_var($mois,FILTER_VALIDATE_INT)){
+			if($annee == filter_var($annee,FILTER_VALIDATE_INT)){
+				$req = $BDD->prepare(
+					'SELECT a.id AS id,
+						a.titre AS titre,
+						a.dateHeureCreation AS dateCreation,
+						a.dateHeureModification AS dateModif,
+						a.contenu AS contenu,
+						a.nbreVues AS nbreVues,
+						a.imageLien AS imageLien,
+						u.pseudo AS pseudo,
+						g.genre AS genre 
+					FROM articles AS a 
+					JOIN utilisateurs AS u ON u.id = a.idAuteur 
+					JOIN genres AS g ON g.id = a.idGenre 
+					WHERE MONTH(a.dateHeureCreation) = :mois AND YEAR(a.dateHeureCreation) = :annee
+					ORDER BY dateCreation DESC'
+				);
+				$req->bindValue('mois',$mois,PDO::PARAM_INT);
+				$req->bindValue('annee',$annee,PDO::PARAM_INT);
+				$req->execute();
+				if($reponse = $req->fetchAll()){
+					return $reponse;
+				}
+				else{
+					return -1;
+				}
+			}
+		}
+	}
+
 	function extraitListeGenres(PDO $database)
 	{ 
 		$response = $database->query
