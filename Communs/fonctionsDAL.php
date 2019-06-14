@@ -11,10 +11,9 @@
 		}
 	}
 	
-	function ajoutUtilisateur($bdd, $pseudo, $motDePasse, $email,	$imageLien, $niveauAdmin)
+	function ajoutUtilisateur($bdd, $pseudo, $motDePasse, $email, $imageLien, $niveauAdmin)
 	{
 		//Test des paramètres
-		
 		$boolOK = true;
 
         //Pseudo
@@ -215,7 +214,8 @@
 		} 
     }
 	
-	function ajoutCommentaire($message,$idArticle,$idAuteur,$BDD){
+	function ajoutCommentaire($message,$idArticle,$idAuteur,$BDD)
+	{
 		$message = filter_var($message,FILTER_SANITIZE_STRING);
 			$reponse = $BDD->prepare("INSERT INTO Commentaires (idArticle, message,dateHeureCreation, dateHeureModification, idAuteur) VALUES (:idArticle,:message,NOW(),NOW(),:idAuteur)");
 			
@@ -242,43 +242,57 @@
 		}
 	}
 	
-	function extraitUtilisateur($idUtilisateur, $BDD){
-		
-		if($idUtilisateur == filter_var($idUtilisateur, FILTER_VALIDATE_INT)){
-		
-			$reponse = $BDD->prepare("SELECT pseudo, email, imageLien, dateInscription, dateDerniereConnexion, nbrMessages, niveauAdmin FROM Utilisateurs WHERE id = :idUtilisateur LIMIT 1 ");
-			
+	function extraitUtilisateur($idUtilisateur, $BDD)
+	{	
+		if($idUtilisateur == filter_var($idUtilisateur, FILTER_VALIDATE_INT))
+		{
+			$reponse = $BDD->prepare("SELECT pseudo, email, imageLien, dateInscription, dateDerniereConnexion, nbrMessages, niveauAdmin FROM Utilisateurs WHERE id = :idUtilisateur LIMIT 1 ");	
 			$reponse->execute(array('idUtilisateur'=>$idUtilisateur));
-			
 			return $donnees= $reponse->fetch();
 		}
-		else{
+		else
+		{
 			return false;
 		}
 	}
 	
-	function extraitArticle($idMessage,$BDD){
-		if($idMessage == filter_var($idMessage,FILTER_VALIDATE_INT)){
+	function listeReduiteUtilisateurs($BDD)
+	{
+		$reponse = $BDD->query("SELECT id, pseudo, niveauAdmin, imageLien FROM Utilisateurs");
+		return $reponse->fetchAll();
+	}
+	
+	function extraitArticle($idMessage,$BDD)
+	{
+		if($idMessage == filter_var($idMessage,FILTER_VALIDATE_INT))
+		{
 			$req = $BDD->prepare('SELECT a.id AS id,a.titre AS titre,a.dateHeureCreation AS dateCreation,a.dateHeureModification AS dateModif,
 			a.contenu AS contenu,a.nbreVues AS nbreVues,u.pseudo AS pseudo,g.genre AS genre FROM articles AS a 
 			JOIN utilisateurs AS u ON a.idAuteur = u.id JOIN genre AS g ON a.idGenre = g.id WHERE a.id = ? LIMIT 1');
 			$req->execute(array($idMessage));
-			if($reponse = $req->fetch()){
+			if($reponse = $req->fetch())
+			{
 				return $reponse;
 			}
-			else{
+			else
+			{
 				return -1;
 			}
 		}
+		else
 		{
 			return -2;
 		}
 	}
 
-	function extraitsArticlesRecents(PDO $BDD,$nbrArticles,$numPremierArticle,$genre = ""){
-		if($nbrArticles == filter_var($nbrArticles,FILTER_VALIDATE_INT)){
-			if($numPremierArticle == filter_var($numPremierArticle,FILTER_VALIDATE_INT)){
-				if($genre == ""){
+	function extraitsArticlesRecents(PDO $BDD,$nbrArticles,$numPremierArticle,$genre = "")
+	{
+		if($nbrArticles == filter_var($nbrArticles,FILTER_VALIDATE_INT))
+		{
+			if($numPremierArticle == filter_var($numPremierArticle,FILTER_VALIDATE_INT))
+			{
+				if($genre == "")
+				{
 					$req = $BDD->prepare('SELECT a.id AS id,a.titre AS titre,a.dateHeureCreation AS dateCreation,a.dateHeureModification AS dateModif,
 					a.contenu AS contenu,a.nbreVues AS nbreVues,u.pseudo AS pseudo,g.genre AS genre FROM articles AS a 
 					JOIN utilisateurs AS u ON u.id = a.idAuteur JOIN genre AS g ON g.id = a.idGenre 
@@ -286,15 +300,19 @@
 					$req->bindValue('nbrArticles',$nbrArticles,PDO::PARAM_INT);
 					$req->bindValue('offset',$numPremierArticle,PDO::PARAM_INT);
 					$req->execute();
-					if($reponse = $req->fetch()){
+					if($reponse = $req->fetch())
+					{
 						return $reponse;
 					}
-					else{
+					else
+					{
 						return -1;
 					}
 				}
-				else{
-					if($genre == filter_var($genre,FILTER_VALIDATE_INT)){
+				else
+				{
+					if($genre == filter_var($genre,FILTER_VALIDATE_INT))
+					{
 						$req = $BDD->prepare('SELECT a.id AS id,a.titre AS titre,a.dateHeureCreation AS dateCreation,a.dateHeureModification AS dateModif,
 						a.contenu AS contenu,a.nbreVues AS nbreVues,u.pseudo AS pseudo,g.genre AS genre FROM articles AS a 
 						JOIN utilisateurs AS u ON u.id = a.idAuteur JOIN genre AS g ON g.id = a.idGenre 
@@ -303,7 +321,8 @@
 						$req->bindValue('offset',$numPremierArticle,PDO::PARAM_INT);
 						$req->bindValue('genre',$genre,PDO::PARAM_INT);
 						$req->execute();
-						if($reponse = $req->fetch()){
+						if($reponse = $req->fetch())
+						{
 							return $reponse;
 						}
 						else{
@@ -315,10 +334,14 @@
 		}
 	}
 	
-	function extraitsArticlesPopulaires(PDO $BDD,$nbrArticles,$numPremierArticle,$genre = ""){
-		if($nbrArticles == filter_var($nbrArticles,FILTER_VALIDATE_INT)){
-			if($numPremierArticle == filter_var($numPremierArticle,FILTER_VALIDATE_INT)){
-				if($genre == ""){
+	function extraitsArticlesPopulaires(PDO $BDD,$nbrArticles,$numPremierArticle,$genre = "")
+	{
+		if($nbrArticles == filter_var($nbrArticles,FILTER_VALIDATE_INT))
+		{
+			if($numPremierArticle == filter_var($numPremierArticle,FILTER_VALIDATE_INT))
+			{
+				if($genre == "")
+				{
 					$req = $BDD->prepare('SELECT a.id AS id,a.titre AS titre,a.dateHeureCreation AS dateCreation,a.dateHeureModification AS dateModif,
 					a.contenu AS contenu,a.nbreVues AS nbreVues,u.pseudo AS pseudo,g.genre AS genre FROM articles AS a 
 					JOIN utilisateurs AS u ON u.id = a.idAuteur JOIN genre AS g ON g.id = a.idGenre 
@@ -326,15 +349,19 @@
 					$req->bindValue('nbrArticles',$nbrArticles,PDO::PARAM_INT);
 					$req->bindValue('offset',$numPremierArticle,PDO::PARAM_INT);
 					$req->execute();
-					if($reponse = $req->fetch()){
+					if($reponse = $req->fetch())
+					{
 						return $reponse;
 					}
-					else{
+					else
+					{
 						return -1;
 					}
 				}
-				else{
-					if($genre == filter_var($genre,FILTER_VALIDATE_INT)){
+				else
+				{
+					if($genre == filter_var($genre,FILTER_VALIDATE_INT))
+					{
 						$req = $BDD->prepare('SELECT a.id AS id,a.titre AS titre,a.dateHeureCreation AS dateCreation,a.dateHeureModification AS dateModif,
 						a.contenu AS contenu,a.nbreVues AS nbreVues,u.pseudo AS pseudo,g.genre AS genre FROM articles AS a 
 						JOIN utilisateurs AS u ON u.id = a.idAuteur JOIN genre AS g ON g.id = a.idGenre 
@@ -343,10 +370,12 @@
 						$req->bindValue('offset',$numPremierArticle,PDO::PARAM_INT);
 						$req->bindValue('genre',$genre,PDO::PARAM_INT);
 						$req->execute();
-						if($reponse = $req->fetch()){
+						if($reponse = $req->fetch())
+						{
 							return $reponse;
 						}
-						else{
+						else
+						{
 							return -1;
 						}
 					}
