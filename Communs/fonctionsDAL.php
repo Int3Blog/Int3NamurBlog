@@ -1,13 +1,20 @@
 <?php
 	function connexionBDD()
-	{
-		if($debug=true)
+	{	if($mdpNecessaire=true)
 		{
-			return new PDO('mysql:host=localhost;dbname=Blog;charset=utf8', 'root', '',array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+			$mdp = 'root';
 		}
 		else
 		{
-			return new PDO('mysql:host=localhost;dbname=Blog;charset=utf8', 'root', '');
+			$mdp = '';
+		}
+		if($debug=true)
+		{
+			return new PDO('mysql:host=localhost;dbname=Blog;charset=utf8', 'root', $mdp,array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+		}
+		else
+		{
+			return new PDO('mysql:host=localhost;dbname=Blog;charset=utf8', 'root', $mdp);
 		}
 	}
 	
