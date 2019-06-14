@@ -1,3 +1,5 @@
+<?php require_once(__DIR__.'/../Communs/fonctionsDAL.php');?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -82,7 +84,7 @@ select
 <body>
 <div class="aside">
 </div>
-<form method="post" action="ajoutArticleControleur.php">
+<form method="post" action="ajoutArticleCheck.php">
 <h3>Ajouter un article</h3>
 Titre: <input type="text" name="titre" id="titre">
 Upload <input type="text" name="fileToUpload" id="upload"> 
@@ -90,11 +92,9 @@ Upload <input type="text" name="fileToUpload" id="upload">
 Texte de l'article : <br><textarea rows="10" cols="80" name="contenuArticle"></textarea>
 <br><input type="submit" value="Envoyer article" name="submitArticle" id="submitArticle">
 Genre:<select name="genreSelect">
-	<?php 
-		require_once('fonctionsDAL.php');
+	<?php
 		$database = connexionBDD();
 		$genre = extraitListeGenres($database);
-		//print_r($genre);
 		
 		echo '<option value="'.$genre[0]['id'].'" selected>'.$genre[0]['genre'].'</option>';
 		for($i=1;$i<count($genre);$i++)
