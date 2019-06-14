@@ -1,5 +1,5 @@
 <?php
-include '../Communs/fonctionsDAL.php';
+require_once(__DIR__.'/../Communs/fonctionsDAL.php');
 
     if(isset($_POST['Genre']))
     {
