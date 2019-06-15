@@ -1,0 +1,65 @@
+html {
+  height: 100%;
+}
+body {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* Avoid the IE 10-11 `min-height` bug. */
+}
+
+.wrapper {
+  display: flex;  
+  flex-flow: row wrap;
+  font-weight: bold;
+  text-align: center;
+}
+
+.wrapper > * {
+  padding: 10px;
+  flex: 1 100%;
+}
+
+.header {
+  background: tomato;
+}
+
+.footer {
+  display: -webkit-box;  /* OLD - iOS 6-, Safari 3.1-6, BB7 */
+  display: -ms-flexbox;  /* TWEENER - IE 10 */
+  display: -webkit-flex; /* NEW - Safari 6.1+. iOS 7.1+, BB10 */
+  display: flex;         /* NEW, Spec - Firefox, Chrome, Opera */
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-around;
+  -ms-flex-pack: justify;
+  background-color: #ff6347;
+  flex-flow: row nowrap;
+  align-content: space-around;
+}
+
+.footer div{
+  display: block;
+  padding: 1em;
+}
+
+
+.aside-1 {
+  background: gold;
+  flex: 1 0 0;
+}
+
+.main {
+  flex: 6, 0px;
+  text-align: left;
+  background: deepskyblue;
+}
+
+@media all{
+  .main    { flex: 6 0px; }
+  .aside-1 { order: 1; } 
+  .main    { order: 2; }
+  .footer  { order: 4; }
+}
+
+body {
+  padding: 2em; 
+}
