@@ -1,5 +1,3 @@
-<?php require_once(__DIR__.'/../Communs/fonctionsDAL.php');?>
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,7 +7,11 @@
 <style>
 @import url('https://fonts.googleapis.com/css?family=Roboto+Condensed&display=swap');
 
-body
+body{
+	height : auto;
+}
+
+#form
 {
 width:800px;
 padding:2em;
@@ -24,10 +26,9 @@ width:auto;
 height:500px;
 border:1px solid black;
 padding:3em 2em 2em 2em;
-margin:5em auto;
 text-align:left;
 border-radius:50px;
-background-color:#fa983a;
+background-color:#ff6347;
 
 }
 
@@ -82,19 +83,20 @@ select
 
 </style>
 <body>
-<div class="aside">
-</div>
-<form method="post" action="ajoutArticleCheck.php">
+<div id="form">
+<form method="post" action="ajoutArticleCheck.php" enctype="multipart/form-data" >
 <h3>Ajouter un article</h3>
 Titre: <input type="text" name="titre" id="titre">
-Upload <input type="text" name="fileToUpload" id="upload"> 
+Upload <input type="file" name="fileToUpload" id="upload"> 
 <br>
 Texte de l'article : <br><textarea rows="10" cols="80" name="contenuArticle"></textarea>
 <br><input type="submit" value="Envoyer article" name="submitArticle" id="submitArticle">
 Genre:<select name="genreSelect">
-	<?php
+	<?php 
+		require_once('fonctionsDAL.php');
 		$database = connexionBDD();
 		$genre = extraitListeGenres($database);
+		//print_r($genre);
 		
 		echo '<option value="'.$genre[0]['id'].'" selected>'.$genre[0]['genre'].'</option>';
 		for($i=1;$i<count($genre);$i++)
@@ -104,7 +106,9 @@ Genre:<select name="genreSelect">
 	?>
 </select>
 </form>
-
+</div>
+<p></p>
+<?php include("footer.html");?>
 </body>
 </html>
 

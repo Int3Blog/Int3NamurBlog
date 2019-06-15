@@ -132,9 +132,24 @@
 	function ajoutGenre ($genre, $manipulateurBDD)
 	{
 		if( trim($genre)!='' && preg_match ( '/^[a-z é è-]+$/i' , $genre ))
-		{
-			$ajoutGenre = $manipulateurBDD->prepare('INSERT INTO genres (genre) VALUES (:genre)');
-			$ajoutGenre->execute(array('genre' => $genre));
+		{	
+			//Vérifie si ce genre existe déjà 
+			$ajoutGenre=$manipulateurBDD->prepare('SELECT COUNT(*) as "nbr" 
+													FROM Genres 
+													WHERE genre = :genre');
+			$ajoutGenre->execute(array('genre'=>$genre));
+			
+			$nombreReponses = $ajoutGenre->fetch()["nbr"];
+			//echo $nombreReponses;
+			
+			if($nombreReponses > 0)
+			{}
+			else
+			{
+				// Ajout du genre
+				$ajoutGenre = $manipulateurBDD->prepare('INSERT INTO Genres (genre) VALUES (:genre)');
+				$ajoutGenre->execute(array('genre' => $genre));
+			}
 		}
 		else
 		{
